@@ -13,7 +13,7 @@ The files have _raw version, which is all the dataset statistics. The other vers
 
 ### Runing the model
 You can run the model by running:
-"python run_loop.py -n 1 --dataset babyLFM2b1k --model BPR --choice-model consume_all --config recbole_config_default.yaml"
+`python run_loop.py -n 1 --dataset babyLFM2b1k --model BPR --choice-model consume_all --config recbole_config_default.yaml`
 
 
 
