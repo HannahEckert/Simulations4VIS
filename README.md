@@ -18,7 +18,7 @@ You can run the model by running:
 
 | Option         | Description                                                                                                                                                                     |
 |----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| -n             | Amount of loops to run                                                                                                                                                          |
+| -n             | Amount of loops to run. Put n=1 to run the training without simulation                                                                                                          |
 | --dataset      | Experiment name (subfolder name) with dataset to evaluate                                                                                                                       |
 | --model        | `Recbole`-model to train and generate recommendations from. So far I only tested BPR                                                                                            |
 | --choice-model | User choice model to simulate acceptance with. consume_all means that the users consume all recommended items and is the best option for a low number of loops(I think)         |
