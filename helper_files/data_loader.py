@@ -47,8 +47,8 @@ def load_data(experiments_folder, experiment_name, focus_country='US', control_c
         params_dict = json.load(f)
 
     global_interactions = pd.read_csv(dataset_inter_filepath, delimiter='\t', header=None, skiprows=1, names=['user_id', 'item_id'])
-    tracks_info = pd.read_csv(tracks_filepath, delimiter='\t', header=None).reset_index()
-    tracks_info.columns = ['item_id', 'artist', 'title', 'country']
+    tracks_info = pd.read_csv(tracks_filepath, delimiter='\t', header=None).reset_index()[[0,1,2,3,4]]
+    tracks_info.columns = ['item_id', 'artist', 'title', 'country', 'gender']
     demographics = pd.read_csv(demographics_file, delimiter='\t', header=None, names=['country', 'age', 'gender', 'signup_date'])
 
     tracks_info['country'] = tracks_info['country'].replace('GB', 'UK')
@@ -71,8 +71,8 @@ def load_data(experiments_folder, experiment_name, focus_country='US', control_c
         user_based_metric_data = pd.read_csv(os.path.join(experiments_folder, experiment_name, 'user_based_metrics.csv'))
     else:
         # Load global interactions and tracks info
-        tracks_info = pd.read_csv(tracks_filepath, delimiter='\t', header=None).reset_index()
-        tracks_info.columns = ['item_id', 'artist', 'title', 'country']
+        tracks_info = pd.read_csv(tracks_filepath, delimiter='\t', header=None).reset_index()[[0,1,2,3,4]]
+        tracks_info.columns = ['item_id', 'artist', 'title', 'country',"gender"]
         demographics = pd.read_csv(demographics_file, delimiter='\t', header=None, names=['country', 'age', 'gender', 'signup_date'])
 
         tracks_info['country'] = tracks_info['country'].replace('GB', 'UK')
@@ -194,6 +194,7 @@ def calculate_prop_jsd(experiments_folder, experiment_name, iterations, tracks_i
 
         user_based_jsd_df[f'{focus_country.lower()}_proportion'] = user_based_proportion_df[f'{focus_country.lower()}_proportion']
         user_based_jsd_df['local_proportion'] = user_based_proportion_df['local_proportion']
+        user_based_jsd_df["male_proportion"] = user_based_proportion_df["male_proportion"]
 
         # Calculate input proportions
         current_iteration_input = load_iteration_data(os.path.join(experiments_folder, experiment_name), iteration, False)
@@ -206,6 +207,7 @@ def calculate_prop_jsd(experiments_folder, experiment_name, iterations, tracks_i
 
         user_based_jsd_df[f'interaction_{focus_country.lower()}_proportion'] = user_based_input_proportion_df[f'{focus_country.lower()}_proportion']
         user_based_jsd_df['interaction_local_proportion'] = user_based_input_proportion_df['local_proportion']
+        user_based_jsd_df["interaction_male_proportion"] = user_based_input_proportion_df["male_proportion"]
 
         # Calculate input JSD
         user_based_input_jsd_df, input_jsd_df = calculate_iteration_jsd_per_user(input_merged, unique_item_countries, history_distribution,

@@ -70,21 +70,28 @@ def calculate_proportions(top_k_data, tracks_info, demographics, focus_country):
     """
     # Prepare the data by merging necessary information
     top_k_data = top_k_data.merge(demographics[['country']], left_on='user_id', right_index=True, how='left').rename(columns={'country': 'user_country'})
+    #top_k_data = top_k_data.merge(demographics[["gender"]], left_on='user_id', right_index=True, how='left').rename(columns={'gender': 'user_gender'})
+    top_k_data = top_k_data.merge(tracks_info[["item_id","gender"]], on='item_id', how='left').rename(columns={'gender': 'artist_gender'})
     top_k_data = top_k_data.merge(tracks_info[['item_id', 'country']], on='item_id', how='left').rename(columns={'country': 'artist_country'})
 
     # Calculate user-level proportions
     user_proportions = top_k_data.groupby('user_id').apply(
         lambda df: pd.Series({
             f'{focus_country.lower()}_proportion': (df['artist_country'] == focus_country).mean(),
-            'local_proportion': (df['user_country'] == df['artist_country']).mean()
+            'local_proportion': (df['user_country'] == df['artist_country']).mean(),
+            "male_proportion": (df["artist_gender"] == "Male").mean()
         })
     ).reset_index()
+
+    print("top k", top_k_data.head())
+
 
     # Aggregate by country
     country_proportions = top_k_data.groupby('user_country').apply(
         lambda df: pd.Series({
             f'{focus_country.lower()}_proportion': (df['artist_country'] == focus_country).mean(),
-            'local_proportion': (df['artist_country'] == df['user_country']).mean()
+            'local_proportion': (df['artist_country'] == df['user_country']).mean(),
+            "male_proportion": (df["artist_gender"] == "Male").mean()
         })
     ).reset_index().rename(columns={'user_country': 'country'})
 
@@ -96,6 +103,8 @@ def calculate_proportions(top_k_data, tracks_info, demographics, focus_country):
     })
 
     country_proportions = pd.concat([pd.DataFrame([global_proportions]), country_proportions], ignore_index=True)
+
+    #print("User Proportions:\n", user_proportions.head())
 
     return user_proportions, country_proportions
 

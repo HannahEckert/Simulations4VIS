@@ -3,7 +3,7 @@ import os.path
 from helper_files.data_loader import load_data
 
 experiments_to_evaluate = [
-    'babyLFM2b/experiments/1k',
+    'babyLFM2b1k',
     # add more experiments here
 ]
 
