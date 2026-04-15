@@ -1,0 +1,296 @@
+Wed 15 Apr 2026 13:53:00 INFO  ['main.py', 'babyLFM2b1k', '55', '--clean', '--model', 'BPR', '--choice-model', 'consume_all', '--config', 'recbole_config_default.yaml']
+Wed 15 Apr 2026 13:53:00 INFO  
+General Hyper Parameters:
+gpu_id = 0
+use_gpu = True
+seed = 2020
+state = INFO
+reproducibility = True
+data_path = recbole_tmp/dataset
+checkpoint_dir = saved
+show_progress = True
+save_dataset = False
+dataset_save_path = None
+save_dataloaders = False
+dataloaders_save_path = None
+log_wandb = False
+
+Training Hyper Parameters:
+epochs = 15
+train_batch_size = 2048
+learner = adam
+learning_rate = 0.001
+train_neg_sample_args = {'distribution': 'uniform', 'sample_num': 1, 'alpha': 1.0, 'dynamic': False, 'candidate_num': 0}
+eval_step = 1
+stopping_step = 5
+clip_grad_norm = None
+weight_decay = 0.0
+loss_decimal_place = 4
+
+Evaluation Hyper Parameters:
+eval_args = {'split': {'RS': [0.75, 0.2, 0.05]}, 'order': 'RO', 'group_by': 'user', 'mode': {'valid': 'full', 'test': 'full'}}
+repeatable = False
+metrics = ['NDCG']
+topk = [10]
+valid_metric = NDCG@10
+valid_metric_bigger = True
+eval_batch_size = 2048
+metric_decimal_place = 6
+
+Dataset Hyper Parameters:
+field_separator = 	
+seq_separator =  
+USER_ID_FIELD = user_id
+ITEM_ID_FIELD = item_id
+RATING_FIELD = rating
+TIME_FIELD = timestamp
+seq_len = None
+LABEL_FIELD = label
+threshold = None
+NEG_PREFIX = neg_
+load_col = {'inter': ['user_id', 'item_id']}
+unload_col = None
+unused_col = None
+additional_feat_suffix = None
+rm_dup_inter = None
+val_interval = None
+filter_inter_by_user_or_item = True
+user_inter_num_interval = [0,inf)
+item_inter_num_interval = [0,inf)
+alias_of_user_id = None
+alias_of_item_id = None
+alias_of_entity_id = None
+alias_of_relation_id = None
+preload_weight = None
+normalize_field = None
+normalize_all = None
+ITEM_LIST_LENGTH_FIELD = item_length
+LIST_SUFFIX = _list
+MAX_ITEM_LIST_LENGTH = 500
+POSITION_FIELD = position_id
+HEAD_ENTITY_ID_FIELD = head_id
+TAIL_ENTITY_ID_FIELD = tail_id
+RELATION_ID_FIELD = relation_id
+ENTITY_ID_FIELD = entity_id
+benchmark_filename = None
+
+Other Hyper Parameters: 
+worker = 0
+wandb_project = recbole
+shuffle = True
+require_pow = False
+enable_amp = False
+enable_scaler = False
+transform = None
+embedding_size = 256
+numerical_features = []
+discretization = None
+kg_reverse_r = False
+entity_kg_num_interval = [0,inf)
+relation_kg_num_interval = [0,inf)
+MODEL_TYPE = ModelType.GENERAL
+MODEL_INPUT_TYPE = InputType.PAIRWISE
+eval_type = EvaluatorType.RANKING
+single_spec = True
+local_rank = 0
+device = cuda
+valid_neg_sample_args = {'distribution': 'uniform', 'sample_num': 'none'}
+test_neg_sample_args = {'distribution': 'uniform', 'sample_num': 'none'}
+
+
+Wed 15 Apr 2026 13:53:01 INFO  dataset
+The number of users: 656
+Average actions of users: 562.2381679389313
+The number of items: 992
+Average actions of items: 371.61049445005045
+The number of inters: 368266
+The sparsity of the dataset: 43.409163552321004%
+Remain Fields: ['user_id', 'item_id']
+Wed 15 Apr 2026 13:53:01 INFO  Preparing dataset
+Wed 15 Apr 2026 13:53:01 INFO  [Training]: train_batch_size = [2048] train_neg_sample_args: [{'distribution': 'uniform', 'sample_num': 1, 'alpha': 1.0, 'dynamic': False, 'candidate_num': 0}]
+Wed 15 Apr 2026 13:53:01 INFO  [Evaluation]: eval_batch_size = [2048] eval_args: [{'split': {'RS': [0.75, 0.2, 0.05]}, 'order': 'RO', 'group_by': 'user', 'mode': {'valid': 'full', 'test': 'full'}}]
+Wed 15 Apr 2026 13:53:01 INFO  Done!
+Wed 15 Apr 2026 13:53:02 INFO  BPR(
+  (user_embedding): Embedding(656, 256)
+  (item_embedding): Embedding(992, 256)
+  (loss): BPRLoss()
+)
+Trainable parameters: 421888
+Wed 15 Apr 2026 13:53:02 INFO  FLOPs: 512.0
+Wed 15 Apr 2026 13:53:05 INFO  epoch 0 training [time: 1.99s, train loss: 86.8848]
+Wed 15 Apr 2026 13:53:08 INFO  epoch 0 evaluating [time: 3.13s, valid_score: 0.819663]
+Wed 15 Apr 2026 13:53:08 INFO  valid result: 
+ndcg@10 : 0.819663
+Wed 15 Apr 2026 13:53:08 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:53:10 INFO  epoch 1 training [time: 1.84s, train loss: 33.4631]
+Wed 15 Apr 2026 13:53:13 INFO  epoch 1 evaluating [time: 3.22s, valid_score: 0.818888]
+Wed 15 Apr 2026 13:53:13 INFO  valid result: 
+ndcg@10 : 0.818888
+Wed 15 Apr 2026 13:53:15 INFO  epoch 2 training [time: 1.90s, train loss: 26.7286]
+Wed 15 Apr 2026 13:53:18 INFO  epoch 2 evaluating [time: 3.32s, valid_score: 0.815310]
+Wed 15 Apr 2026 13:53:18 INFO  valid result: 
+ndcg@10 : 0.81531
+Wed 15 Apr 2026 13:53:20 INFO  epoch 3 training [time: 1.82s, train loss: 26.0612]
+Wed 15 Apr 2026 13:53:23 INFO  epoch 3 evaluating [time: 3.07s, valid_score: 0.818467]
+Wed 15 Apr 2026 13:53:23 INFO  valid result: 
+ndcg@10 : 0.818467
+Wed 15 Apr 2026 13:53:25 INFO  epoch 4 training [time: 1.79s, train loss: 25.7036]
+Wed 15 Apr 2026 13:53:28 INFO  epoch 4 evaluating [time: 3.26s, valid_score: 0.819942]
+Wed 15 Apr 2026 13:53:28 INFO  valid result: 
+ndcg@10 : 0.819942
+Wed 15 Apr 2026 13:53:28 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:53:30 INFO  epoch 5 training [time: 1.87s, train loss: 25.2369]
+Wed 15 Apr 2026 13:53:34 INFO  epoch 5 evaluating [time: 3.28s, valid_score: 0.821999]
+Wed 15 Apr 2026 13:53:34 INFO  valid result: 
+ndcg@10 : 0.821999
+Wed 15 Apr 2026 13:53:34 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:53:35 INFO  epoch 6 training [time: 1.83s, train loss: 24.8151]
+Wed 15 Apr 2026 13:53:39 INFO  epoch 6 evaluating [time: 3.21s, valid_score: 0.825995]
+Wed 15 Apr 2026 13:53:39 INFO  valid result: 
+ndcg@10 : 0.825995
+Wed 15 Apr 2026 13:53:39 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:53:40 INFO  epoch 7 training [time: 1.83s, train loss: 23.8701]
+Wed 15 Apr 2026 13:53:44 INFO  epoch 7 evaluating [time: 3.27s, valid_score: 0.833069]
+Wed 15 Apr 2026 13:53:44 INFO  valid result: 
+ndcg@10 : 0.833069
+Wed 15 Apr 2026 13:53:44 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:53:46 INFO  epoch 8 training [time: 1.81s, train loss: 23.0588]
+Wed 15 Apr 2026 13:53:49 INFO  epoch 8 evaluating [time: 3.21s, valid_score: 0.824460]
+Wed 15 Apr 2026 13:53:49 INFO  valid result: 
+ndcg@10 : 0.82446
+Wed 15 Apr 2026 13:53:50 INFO  epoch 9 training [time: 1.73s, train loss: 22.0929]
+Wed 15 Apr 2026 13:53:54 INFO  epoch 9 evaluating [time: 3.02s, valid_score: 0.830169]
+Wed 15 Apr 2026 13:53:54 INFO  valid result: 
+ndcg@10 : 0.830169
+Wed 15 Apr 2026 13:53:55 INFO  epoch 10 training [time: 1.78s, train loss: 21.1992]
+Wed 15 Apr 2026 13:53:58 INFO  epoch 10 evaluating [time: 3.21s, valid_score: 0.836435]
+Wed 15 Apr 2026 13:53:58 INFO  valid result: 
+ndcg@10 : 0.836435
+Wed 15 Apr 2026 13:53:59 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:54:00 INFO  epoch 11 training [time: 1.82s, train loss: 20.2745]
+Wed 15 Apr 2026 13:54:03 INFO  epoch 11 evaluating [time: 3.17s, valid_score: 0.835036]
+Wed 15 Apr 2026 13:54:03 INFO  valid result: 
+ndcg@10 : 0.835036
+Wed 15 Apr 2026 13:54:05 INFO  epoch 12 training [time: 1.75s, train loss: 19.0796]
+Wed 15 Apr 2026 13:54:08 INFO  epoch 12 evaluating [time: 3.22s, valid_score: 0.840423]
+Wed 15 Apr 2026 13:54:08 INFO  valid result: 
+ndcg@10 : 0.840423
+Wed 15 Apr 2026 13:54:08 INFO  Saving current: saved/BPR-Apr-15-2026_13-53-02.pth
+Wed 15 Apr 2026 13:54:10 INFO  epoch 13 training [time: 1.86s, train loss: 17.8080]
+Wed 15 Apr 2026 13:54:13 INFO  epoch 13 evaluating [time: 2.89s, valid_score: 0.838326]
+Wed 15 Apr 2026 13:54:13 INFO  valid result: 
+ndcg@10 : 0.838326
+Wed 15 Apr 2026 13:54:15 INFO  epoch 14 training [time: 1.75s, train loss: 17.1362]
+Wed 15 Apr 2026 13:54:18 INFO  epoch 14 evaluating [time: 3.28s, valid_score: 0.839699]
+Wed 15 Apr 2026 13:54:18 INFO  valid result: 
+ndcg@10 : 0.839699
+Wed 15 Apr 2026 13:54:18 INFO  best valid : OrderedDict([('ndcg@10', 0.840423)])
+Wed 15 Apr 2026 13:54:18 INFO  
+General Hyper Parameters:
+gpu_id = 0
+use_gpu = True
+seed = 2020
+state = INFO
+reproducibility = True
+data_path = recbole_tmp/dataset
+checkpoint_dir = saved
+show_progress = True
+save_dataset = False
+dataset_save_path = None
+save_dataloaders = False
+dataloaders_save_path = None
+log_wandb = False
+
+Training Hyper Parameters:
+epochs = 15
+train_batch_size = 2048
+learner = adam
+learning_rate = 0.001
+train_neg_sample_args = {'distribution': 'uniform', 'sample_num': 1, 'alpha': 1.0, 'dynamic': False, 'candidate_num': 0}
+eval_step = 1
+stopping_step = 5
+clip_grad_norm = None
+weight_decay = 0.0
+loss_decimal_place = 4
+
+Evaluation Hyper Parameters:
+eval_args = {'split': {'RS': [0.75, 0.2, 0.05]}, 'order': 'RO', 'group_by': 'user', 'mode': {'valid': 'full', 'test': 'full'}}
+repeatable = False
+metrics = ['NDCG']
+topk = [10]
+valid_metric = NDCG@10
+valid_metric_bigger = True
+eval_batch_size = 2048
+metric_decimal_place = 6
+
+Dataset Hyper Parameters:
+field_separator = 	
+seq_separator =  
+USER_ID_FIELD = user_id
+ITEM_ID_FIELD = item_id
+RATING_FIELD = rating
+TIME_FIELD = timestamp
+seq_len = None
+LABEL_FIELD = label
+threshold = None
+NEG_PREFIX = neg_
+load_col = {'inter': ['user_id', 'item_id']}
+unload_col = None
+unused_col = None
+additional_feat_suffix = None
+rm_dup_inter = None
+val_interval = None
+filter_inter_by_user_or_item = True
+user_inter_num_interval = [0,inf)
+item_inter_num_interval = [0,inf)
+alias_of_user_id = None
+alias_of_item_id = None
+alias_of_entity_id = None
+alias_of_relation_id = None
+preload_weight = None
+normalize_field = None
+normalize_all = None
+ITEM_LIST_LENGTH_FIELD = item_length
+LIST_SUFFIX = _list
+MAX_ITEM_LIST_LENGTH = 500
+POSITION_FIELD = position_id
+HEAD_ENTITY_ID_FIELD = head_id
+TAIL_ENTITY_ID_FIELD = tail_id
+RELATION_ID_FIELD = relation_id
+ENTITY_ID_FIELD = entity_id
+benchmark_filename = None
+
+Other Hyper Parameters: 
+worker = 0
+wandb_project = recbole
+shuffle = True
+require_pow = False
+enable_amp = False
+enable_scaler = False
+transform = None
+embedding_size = 256
+numerical_features = []
+discretization = None
+kg_reverse_r = False
+entity_kg_num_interval = [0,inf)
+relation_kg_num_interval = [0,inf)
+MODEL_TYPE = ModelType.GENERAL
+MODEL_INPUT_TYPE = InputType.PAIRWISE
+eval_type = EvaluatorType.RANKING
+single_spec = True
+local_rank = 0
+device = cuda
+valid_neg_sample_args = {'distribution': 'uniform', 'sample_num': 'none'}
+test_neg_sample_args = {'distribution': 'uniform', 'sample_num': 'none'}
+
+
+Wed 15 Apr 2026 13:54:19 INFO  dataset
+The number of users: 656
+Average actions of users: 562.2381679389313
+The number of items: 992
+Average actions of items: 371.61049445005045
+The number of inters: 368266
+The sparsity of the dataset: 43.409163552321004%
+Remain Fields: ['user_id', 'item_id']
+Wed 15 Apr 2026 13:54:20 INFO  [Training]: train_batch_size = [2048] train_neg_sample_args: [{'distribution': 'uniform', 'sample_num': 1, 'alpha': 1.0, 'dynamic': False, 'candidate_num': 0}]
+Wed 15 Apr 2026 13:54:20 INFO  [Evaluation]: eval_batch_size = [2048] eval_args: [{'split': {'RS': [0.75, 0.2, 0.05]}, 'order': 'RO', 'group_by': 'user', 'mode': {'valid': 'full', 'test': 'full'}}]
