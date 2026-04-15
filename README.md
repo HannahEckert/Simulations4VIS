@@ -116,6 +116,8 @@ This table contains information about the recommendations of each user at each s
 | us_interaction_proportion    | Percentage of input data at this iteration for tracks originating in US                   |
 | local_proportion             | Percentage of recommendations for tracks originating in user country                      |
 | local_interaction_proportion | Percentage of input data at this iteration for tracks originating in user country         |
+| male_proportion              | Percentage of recommendations for tracks by male artists                                  |
+| male_interaction_proportion  | Percentage of input data at this iteration for tracks by male artists                     |
 
 #### metrics.csv
 The metrics file contains the same information as `user_based_metrics`, but grouped by user country and iteration.
