@@ -103,7 +103,7 @@ def cleanup(dataset_name: str, iteration: int):
     shutil.rmtree('recbole_tmp', ignore_errors=True)
 
 
-def compute_top_k_scores(scores, dataset: str, iteration: int, k=10):
+def compute_top_k_scores(scores, dataset: str, iteration: int, k=10, orig_user_ids=None):
     """
     Computes the top k scores per user, saves it into the output folder
     and returns a dataframe with the new interactions
@@ -119,9 +119,11 @@ def compute_top_k_scores(scores, dataset: str, iteration: int, k=10):
             item_ids.append(item)
             score.append(s[item])
 
+    if orig_user_ids is None:
+        orig_user_ids = list(range(n))
     user_ids = []
-    for i in range(n):
-        user_ids.extend([i] * k)
+    for uid in orig_user_ids:
+        user_ids.extend([uid] * k)
 
     df = pd.DataFrame.from_dict({
         'user_id': user_ids,
@@ -143,11 +145,13 @@ def compute_top_k_scores(scores, dataset: str, iteration: int, k=10):
      help='Country to be used as a frozen control group that doesn\'t receive new recommendations')
 @arg('--clean', action=argparse.BooleanOptionalAction,
      help='If True, deletes all files in the data/ output/ and logs/ folders that may be present')
+@arg('--warm-start', action=argparse.BooleanOptionalAction,
+     help='If True, continues training from the previous iteration\'s checkpoint instead of reinitializing weights')
 def do_single_loop(
         dataset_name, iteration, model='ItemKNN', choice_model='random',
         config='recbole_config_default.yaml',
         k=10, control_country=None,
-        clean=False):
+        clean=False, warm_start=False):
     """
     Executes a single iteration loop consisting of training, evaluation and the
     addition of new interactions by a choice model. This file only does a single loop at a time and needs to be called as a subprocess.
@@ -176,7 +180,15 @@ def do_single_loop(
 
     config = Config(model=model, dataset='dataset', config_file_list=[config])
     # Use Recbole to obtain a trained model changed !!!
-    run_recbole_experiment(model=model, dataset=dataset_name, iteration=iteration, config=config)
+    checkpoint_path = None
+    if warm_start and iteration > 1:
+        prev_checkpoint = EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration - 1}_checkpoint.pth'
+        if prev_checkpoint.exists():
+            checkpoint_path = str(prev_checkpoint)
+            print(f'Warm start: loading checkpoint from {checkpoint_path}')
+        else:
+            print(f'Warning: warm start requested but no checkpoint found at {prev_checkpoint}. Training from scratch.')
+    run_recbole_experiment(model=model, dataset=dataset_name, iteration=iteration, config=config, checkpoint_path=checkpoint_path)
     # Attempt to make sure the model is garbage collected and doesn't leak memory
     del config
 
@@ -187,9 +199,11 @@ def do_single_loop(
     # Obtain recommendation scores
     scores = get_recbole_scores(model, dataset, test_data, config)
 
+    # Get original user token IDs in the same order as the rows in the scores matrix
+    orig_user_ids = [int(k) for k in dataset.field2token_id['user_id'].keys() if k != '[PAD]']
 
     # Obtain top k scores and save them for later analysis
-    top_k_df = compute_top_k_scores(scores, dataset_name, iteration, k=k)
+    top_k_df = compute_top_k_scores(scores, dataset_name, iteration, k=k, orig_user_ids=orig_user_ids)
     top_k_df.to_csv(
         EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_top_k.tsv', header=True,
         sep='\t', index=False)
@@ -230,6 +244,8 @@ def do_single_loop(
     torch.save(user_embedding, EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_user_embedding.pt')
     torch.save(item_embedding, EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_item_embedding.pt')
 
+    # Copy checkpoint to output folder so it survives the next iteration's prepare_run (which clears saved/)
+    shutil.copy(model_path, EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_checkpoint.pth')
 
     # Cleanup after finished loop
     cleanup(dataset_name, iteration)
