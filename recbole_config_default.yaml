@@ -14,12 +14,12 @@ embedding_size: 256
 MAX_ITEM_LIST_LENGTH: 500
 
 # Training and evaluation config
-epochs: 15 # We do early stopping, in WS23/24 experiments this was never reached
+epochs: 10 # We do early stopping, in WS23/24 experiments this was never reached
 train_batch_size: 2048
 eval_batch_size: 2048 #1048576 
 # Do Validation after every n epochs
 eval_step: 1
-stopping_step: 5 # Stop if validation metric does not improve for 5 epochs
+stopping_step: 500 # Stop if validation metric does not improve for 500 epochs (no early stopping)
 train_neg_sample_args:
     distribution: uniform
 eval_args:
@@ -30,7 +30,7 @@ eval_args:
 metrics: ['NDCG'] # 'Recall', 'Precision', 'MRR', 'Hit'
 topk: 10 # report only the number that is actually used for early stopping.
 valid_metric: NDCG@10
-metric_decimal_place: 6
+metric_decimal_place: 3
 
 # hardware settings
 use_gpu: True # will default to CPU if no GPU is available

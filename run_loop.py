@@ -5,12 +5,14 @@ import argh
 from argh import arg
 
 
+
 @arg('-n', type=int, help='Number of iterations to run')
 @arg('--dataset', type=str, help='Name of the dataset (a subfolder under experiments/) to be evaluated')
 @arg('--model', type=str, help='Name of RecBole model to be used')
 @arg('--choice-model', type=str, help='Name of choice model to be used.')
 @arg('-c', '--config', type=str, help='Path to the Recbole config file')
-def call_script(n=100, dataset="example", model="ItemKNN", choice_model="rank_based", config="recbole_config_default.yaml"):
+@arg('--warm-start', action='store_true', help='Continue training from previous iteration\'s checkpoint instead of reinitializing weights')
+def call_script(n=100, dataset="example", model="ItemKNN", choice_model="rank_based", config="recbole_config_default.yaml", warm_start=False):
     for i in range(1, n + 1):
         command = [
             sys.executable, "main.py", dataset, str(i),
@@ -19,6 +21,8 @@ def call_script(n=100, dataset="example", model="ItemKNN", choice_model="rank_ba
             "--choice-model", choice_model,
             "--config", config,
         ]
+        if warm_start:
+            command.append('--warm-start')
         result = subprocess.run(command, check=True)
 
         if result.returncode == 0:

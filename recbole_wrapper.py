@@ -11,13 +11,17 @@ from recbole.utils.case_study import full_sort_scores
 from tqdm import trange
 
 import os
+import shutil
 
 
 
-def run_recbole_experiment(model: str, dataset: str, iteration: int, config: Config):
+def run_recbole_experiment(model: str, dataset: str, iteration: int, config: Config, checkpoint_path: str = None):
     """
     Initially we used recbole.quick_start.run_recbole() to run the RecBole models.
     However, this has many limitations and undesired behaviour and thus we implemented the function ourselves
+
+    :param checkpoint_path: Optional path to a previously saved .pth checkpoint. If provided, the model weights
+                            are loaded from this checkpoint before training (warm start / continued training).
     """
     init_seed(config["seed"], config["reproducibility"])
 
@@ -50,12 +54,31 @@ def run_recbole_experiment(model: str, dataset: str, iteration: int, config: Con
     # trainer loading and initialization
     trainer = get_trainer(config["MODEL_TYPE"], config["model"])(config, model)
 
+    # warm start: resume from a previous checkpoint instead of training from scratch
+    if checkpoint_path is not None:
+        logger.info(f'Resuming training from checkpoint: {checkpoint_path}')
+        trainer.resume_checkpoint(checkpoint_path)
+        # Reset epoch and early-stopping counters so a full new training run is performed.
+        # Without this, RecBole thinks it already ran N epochs and stops immediately.
+        trainer.start_epoch = 0
+        trainer.cur_step = 0
+        trainer.best_valid_score = -np.inf
+
     # model training
     best_valid_score, best_valid_result = trainer.fit(
         train_data, valid_data, saved=True, show_progress=config["show_progress"]
     )
     logger.info(set_color("best valid ", "yellow") + f": {best_valid_result}")
 
+    # When warm-starting, RecBole only writes to saved/ if a new best score is reached.
+    # If the score never improved (e.g. early stopped immediately), saved/ stays empty.
+    # In that case, force-save the current model state so the checkpoint always reflects
+    # the latest training run (not the previous iteration's weights).
+    saved_dir = config["checkpoint_dir"]
+    if checkpoint_path is not None and not any(os.scandir(saved_dir)):
+        fallback_path = os.path.join(saved_dir, os.path.basename(checkpoint_path))
+        logger.info(f'No new best model saved (score did not improve). Force-saving current model state to: {fallback_path}')
+        trainer._save_checkpoint(epoch=trainer.epochs, saved_model_file=fallback_path)
 
     # cleanup to hopefully avoid memory leaks
     del model
