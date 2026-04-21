@@ -21,7 +21,7 @@ You can run the model by running:
 | -n                      | Amount of loops to run. Put n=1 to run the training without simulation                                                                                                          |
 | --dataset               | Experiment name (subfolder name) with dataset to evaluate                                                                                                                       |
 | --model                 | `Recbole`-model to train and generate recommendations from. So far I only tested BPR                                                                                            |
-| --choice-model          | User choice model to simulate acceptance with. consume_all means that the users consume all recommended items and is the best option for a low number of loops(I think)         |
+| --choice-model          | User choice model to simulate acceptance with. consume_all means that the users consume all recommended items and is the best option for a low number of loops       |
 | --config                | Recbole config file to be used. In that config file you can change some training details.                                                                                       |
 | --train-from-checkpoint | Initialize training from the embeddings of the last iteration                                                                                                                   |
 | --starting-iteration    | If you want to rerun the last run starting from a specific iteration (you can e.g. give a new choice model from that point)                                                     |
