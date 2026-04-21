@@ -14,15 +14,17 @@ The files have _raw version, which is all the dataset statistics. The other vers
 ### Runing the model
 You can run the model by running:
 
-`python run_loop.py -n 5 --dataset babyLFM2b1k --model BPR --choice-model consume_all --config recbole_config_default.yaml`
+`python run_loop.py -n 5 --dataset babyLFM2b1k --model BPR --choice-model consume_all --config recbole_config_default.yaml` --train-from-checkpoint
 
-| Option         | Description                                                                                                                                                                     |
-|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| -n             | Amount of loops to run. Put n=1 to run the training without simulation                                                                                                          |
-| --dataset      | Experiment name (subfolder name) with dataset to evaluate                                                                                                                       |
-| --model        | `Recbole`-model to train and generate recommendations from. So far I only tested BPR                                                                                            |
-| --choice-model | User choice model to simulate acceptance with. consume_all means that the users consume all recommended items and is the best option for a low number of loops(I think)         |
-| --config       | Recbole config file to be used. In that config file you can change some training details.                          
+| Option                  | Description                                                                                                                                                                     |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -n                      | Amount of loops to run. Put n=1 to run the training without simulation                                                                                                          |
+| --dataset               | Experiment name (subfolder name) with dataset to evaluate                                                                                                                       |
+| --model                 | `Recbole`-model to train and generate recommendations from. So far I only tested BPR                                                                                            |
+| --choice-model          | User choice model to simulate acceptance with. consume_all means that the users consume all recommended items and is the best option for a low number of loops(I think)         |
+| --config                | Recbole config file to be used. In that config file you can change some training details.                                                                                       |
+| --train-from-checkpoint | Initialize training from the embeddings of the last iteration                                                                                                                   |
+| --starting-iteration    | If you want to rerun the last run starting from a specific iteration (you can e.g. give a new choice model from that point)                                                     |
 
 
 ### Output
