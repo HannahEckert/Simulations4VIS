@@ -145,13 +145,13 @@ def compute_top_k_scores(scores, dataset: str, iteration: int, k=10, orig_user_i
      help='Country to be used as a frozen control group that doesn\'t receive new recommendations')
 @arg('--clean', action=argparse.BooleanOptionalAction,
      help='If True, deletes all files in the data/ output/ and logs/ folders that may be present')
-@arg('--warm-start', action=argparse.BooleanOptionalAction,
+@arg('--train-from-checkpoint', action=argparse.BooleanOptionalAction,
      help='If True, continues training from the previous iteration\'s checkpoint instead of reinitializing weights')
 def do_single_loop(
         dataset_name, iteration, model='ItemKNN', choice_model='random',
         config='recbole_config_default.yaml',
         k=10, control_country=None,
-        clean=False, warm_start=False):
+        clean=False, train_from_checkpoint=False):
     """
     Executes a single iteration loop consisting of training, evaluation and the
     addition of new interactions by a choice model. This file only does a single loop at a time and needs to be called as a subprocess.
@@ -164,6 +164,7 @@ def do_single_loop(
                                   names=['country', 'age', 'gender', 'registration_time'])
     tracks_df = pd.read_csv(tracks_path, sep='\t', header=None, names=['title', 'artist', 'country'])
     print(' Done!')
+
 
     if iteration == 1:
         # Write a small json file containing the parameters with which this command was called.
@@ -181,14 +182,18 @@ def do_single_loop(
     config = Config(model=model, dataset='dataset', config_file_list=[config])
     # Use Recbole to obtain a trained model changed !!!
     checkpoint_path = None
-    if warm_start and iteration > 1:
+    if train_from_checkpoint and iteration > 1:
         prev_checkpoint = EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration - 1}_checkpoint.pth'
         if prev_checkpoint.exists():
             checkpoint_path = str(prev_checkpoint)
-            print(f'Warm start: loading checkpoint from {checkpoint_path}')
+            print(f'Train from checkpoint: loading checkpoint from {checkpoint_path}')
         else:
-            print(f'Warning: warm start requested but no checkpoint found at {prev_checkpoint}. Training from scratch.')
+            print(f'Warning: train-from-checkpoint requested but no checkpoint found at {prev_checkpoint}. Training from scratch.')
+
+
     run_recbole_experiment(model=model, dataset=dataset_name, iteration=iteration, config=config, checkpoint_path=checkpoint_path)
+
+
     # Attempt to make sure the model is garbage collected and doesn't leak memory
     del config
 
@@ -244,8 +249,10 @@ def do_single_loop(
     torch.save(user_embedding, EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_user_embedding.pt')
     torch.save(item_embedding, EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_item_embedding.pt')
 
+
     # Copy checkpoint to output folder so it survives the next iteration's prepare_run (which clears saved/)
     shutil.copy(model_path, EXPERIMENTS_FOLDER / dataset_name / 'output' / f'iteration_{iteration}_checkpoint.pth')
+
 
     # Cleanup after finished loop
     cleanup(dataset_name, iteration)

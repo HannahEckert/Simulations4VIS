@@ -11,9 +11,11 @@ from argh import arg
 @arg('--model', type=str, help='Name of RecBole model to be used')
 @arg('--choice-model', type=str, help='Name of choice model to be used.')
 @arg('-c', '--config', type=str, help='Path to the Recbole config file')
-@arg('--warm-start', action='store_true', help='Continue training from previous iteration\'s checkpoint instead of reinitializing weights')
-def call_script(n=100, dataset="example", model="ItemKNN", choice_model="rank_based", config="recbole_config_default.yaml", warm_start=False):
-    for i in range(1, n + 1):
+@arg('--train-from-checkpoint', action='store_true', help='Continue training from previous iteration\'s checkpoint instead of reinitializing weights')
+@arg("--starting-iteration", type=int, default=1, help="The iteration number to start with (use when --train-from-checkpoint is enabled and the previous iteration(s) already exist)")
+
+def call_script(n=100, dataset="example", model="ItemKNN", choice_model="rank_based", config="recbole_config_default.yaml", train_from_checkpoint=False, starting_iteration=1):
+    for i in range(starting_iteration, n + 1):
         command = [
             sys.executable, "main.py", dataset, str(i),
             "--clean",
@@ -21,8 +23,8 @@ def call_script(n=100, dataset="example", model="ItemKNN", choice_model="rank_ba
             "--choice-model", choice_model,
             "--config", config,
         ]
-        if warm_start:
-            command.append('--warm-start')
+        if train_from_checkpoint:
+            command.append('--train-from-checkpoint')
         result = subprocess.run(command, check=True)
 
         if result.returncode == 0:
